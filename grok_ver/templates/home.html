@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="sw" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habari za Siasa Kenya Leo</title>
+    <meta name="description" content="Habari 5 mpya za siasa Kenya kila siku kwa Kiswahili">
+    
+    <!-- Google Fonts – Noto Sans (nzuri kwa Kiswahili) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Roboto:wght@500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #0f0f1a;
+            --card: #1a1a2e;
+            --text: #e0e0ff;
+            --accent: #00d4aa;
+            --border: #16213e;
+        }
+        [data-theme="light"] {
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --text: #212529;
+            --accent: #0066cc;
+            --border: #dee2e6;
+        }
+        
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 20px 15px;
+            min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--accent);
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .day-group {
+            background: var(--card);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+        }
+        .day-header {
+            background: var(--accent);
+            color: white;
+            padding: 15px 25px;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+        .articles {
+            padding: 20px;
+        }
+        .article {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+        }
+        .article:last-child { border-bottom: none; }
+        
+        .article-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            transition: transform 0.3s;
+        }
+        .article-img:hover { transform: scale(1.02); }
+        
+        .title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            margin: 15px 0;
+            color: var(--accent);
+            line-height: 1.3;
+        }
+        .meta {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            color: #00d4aa;
+        }
+        .content {
+            font-size: 1.15rem;
+            margin: 18px 0;
+            text-align: justify;
+        }
+        .source {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: var(--accent);
+            color: white;
+            display: inline-block;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .source:hover {
+            background: #00ffbb;
+            color: black;
+            transform: translateY(-2px);
+        }
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .article-img { height: 250px; }
+            .title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Habari za Siasa Kenya</h1>
+            <p class="subtitle">Habari 5 mpya kila siku • Kiswahili • {{ now().strftime('%A, %d %B %Y') }}</p>
+        </header>
+
+        {% for day, arts in grouped.items()|reverse %}
+            <div class="day-group">
+                <div class="day-header">
+                    {{ day.strftime('%A, %d %B %Y') }}
+                </div>
+                <div class="articles">
+                    {% for a in arts %}
+                        <div class="article">
+                            {% if a.image_url %}
+                                <img src="{{ a.image_url }}" alt="{{ a.title }}" class="article-img" loading="lazy">
+                            {% else %}
+                                <div style="height:300px; background:#333; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#666; font-size:1.2rem;">
+                                    Picha haipatikani
+                                </div>
+                            {% endif %}
+
+                            <div class="title">{{ a.title }}</div>
+                            <div class="meta">
+                                Maneno: {{ a.content.split()|length }} • 
+                                {{ a.created_at.strftime('%H:%M') }} 
+                            </div>
+                            <div class="content">{{ a.content|replace("\n\n", "<br><br>")|safe }}</div>
+                            
+                            <a href="{{ a.source_url }}" target="_blank" class="source">
+                                Soma zaidi kwenye chanzo
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div style="text-align:center; padding:80px; font-size:1.3rem; opacity:0.7;">
+                Hakuna habari bado leo. Subiri kidogo au <a href="/fetch" style="color:var(--accent)">chukua sasa</a>
+            </div>
+        {% endfor %}
+
+        <footer>
+            Habari za Siasa Kenya • 2025 • Inatumia data kutoka Google News na vyanzo vingine vya umma
+        </footer>
+    </div>
+
+    <!-- Auto dark mode detection -->
+    <script>
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    </script>
+</body>
+</html>

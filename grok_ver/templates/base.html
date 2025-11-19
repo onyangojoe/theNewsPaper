@@ -1,0 +1,17 @@
+cat > templates/home.html << 'EOF'
+<!doctype html>
+<html lang="sw">
+<head>
+    <meta charset="utf-8">
+    <title>Habari za Leo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h1>Karibu! Habari zimefanikisha kusoma.</h1>
+    <p>Habari mpya: {{ grouped|length }} makundi yamepatikana.</p>
+    <small>Server inafanya kazi vizuri sasa!</small>
+</body>
+</html>
